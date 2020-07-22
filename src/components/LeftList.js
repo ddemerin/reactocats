@@ -4,9 +4,7 @@ export class LeftList extends Component {
   render() {
     return (
       <li>
-        <a class={this.props.linkClass} href="">
-          {this.props.linkName}
-        </a>
+        <a class={this.props.linkClass}>{this.props.linkName}</a>
       </li>
     )
   }

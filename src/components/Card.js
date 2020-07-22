@@ -1,20 +1,60 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
-export class Card extends Component {
-  render() {
+const Card = () => {
+  const [kittehs, setKittehs] = useState([{ authors: [] }])
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const loadKittehs = async () => {
+      const resp = await axios.get('http://sdg-octodex.herokuapp.com')
+      setKittehs(prevKittehs => {
+        prevKittehs = resp.data.data
+        return prevKittehs
+      })
+      setIsLoaded(true)
+    }
+    loadKittehs()
+  }, [])
+
+  if (isLoaded) {
     return (
-      <div>
-        <li class="kittehs">
-          <img src={this.props.imageUrl} alt={this.props.catName} />
-        </li>
-        <p>
-          #{this.props.catNumber}: <span>{this.props.catName}</span>
-          <object>
-            <img src={this.props.iconUrl} class="icon" alt="author" />
-          </object>
-        </p>
-      </div>
+      <>
+        <main>
+          <ul>
+            <section>
+              {kittehs.map(cat => {
+                return (
+                  <div>
+                    <li class="kittehs">
+                      <img src={cat.image} alt={cat.alt} />
+                    </li>
+                    <p>
+                      {cat.number}: <span>{cat.name}</span>
+                      <section className="authors">
+                        {cat.authors.map(author => {
+                          return (
+                            <a href={author.link}>
+                              <img
+                                src={author.image}
+                                className="icon"
+                                alt="author"
+                              />
+                            </a>
+                          )
+                        })}
+                      </section>
+                    </p>
+                  </div>
+                )
+              })}
+            </section>
+          </ul>
+        </main>
+      </>
     )
+  } else {
+    return <div>Loading Kittehs...</div>
   }
 }
 
